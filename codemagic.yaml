@@ -7,21 +7,19 @@ workflows:
       vars:
         BUNDLE_ID: "com.music.bitchord"
     scripts:
-      - name: Enter KMP Project
+      - name: Setup Gradle
         script: |
-          cd BitChordIOS
           chmod +x gradlew
       - name: Build KMP Framework
         script: |
-          cd BitChordIOS
           ./gradlew :shared:embedAndSignAppleFrameworkForXcode
       - name: Install Pods
         script: |
-          cd BitChordIOS/iosApp
+          cd iosApp
           pod install
       - name: Build iOS (Unsigned)
         script: |
-          cd BitChordIOS/iosApp
+          cd iosApp
           xcodebuild -workspace BitChordIOS.xcworkspace \
                      -scheme BitChordIOS \
                      -configuration Release \
@@ -33,7 +31,7 @@ workflows:
                      archive
       - name: Export IPA (Unsigned)
         script: |
-          cd BitChordIOS/iosApp
+          cd iosApp
           cat > ExportOptions.plist << 'EOF'
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -60,7 +58,7 @@ EOF
                      CODE_SIGN_IDENTITY="" \
                      CODE_SIGNING_REQUIRED=NO
     artifacts:
-      - BitChordIOS/iosApp/build/Export/*.ipa
+      - iosApp/build/Export/*.ipa
     publishing:
       email:
         recipients:
