@@ -1,0 +1,71 @@
+name: iOS Build (Unsigned)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    timeout-minutes: 60
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+      
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+      
+      - name: Build KMP Framework
+        run: |
+          chmod +x gradlew
+          ./gradlew :shared:embedAndSignAppleFrameworkForXcode --no-daemon
+      
+      - name: Install CocoaPods
+        run: |
+          cd iosApp
+          pod install
+      
+      - name: Build iOS (Unsigned)
+        run: |
+          cd iosApp
+          xcodebuild -workspace BitChordIOS.xcworkspace \
+                     -scheme BitChordIOS \
+                     -configuration Release \
+                     -destination generic/platform=iOS \
+                     -archivePath build/BitChordIOS.xcarchive \
+                     CODE_SIGNING_ALLOWED=NO \
+                     CODE_SIGN_IDENTITY="" \
+                     CODE_SIGNING_REQUIRED=NO \
+                     archive
+      
+      - name: Create ExportOptions.plist
+        run: |
+          cd iosApp
+          printf '<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n<plist version="1.0">\n<dict>\n    <key>method</key>\n    <string>ad-hoc</string>\n    <key>compileBitcode</key>\n    <false/>\n    <key>stripSwiftSymbols</key>\n    <true/>\n    <key>signingStyle</key>\n    <string>manual</string>\n    <key>provisioningProfiles</key>\n    <dict/>\n</dict>\n</plist>\n' > ExportOptions.plist
+      
+      - name: Export IPA (Unsigned)
+        run: |
+          cd iosApp
+          xcodebuild -exportArchive \
+                     -archivePath build/BitChordIOS.xcarchive \
+                     -exportPath build/Export \
+                     -exportOptionsPlist ExportOptions.plist \
+                     CODE_SIGNING_ALLOWED=NO \
+                     CODE_SIGN_IDENTITY="" \
+                     CODE_SIGNING_REQUIRED=NO
+      
+      - name: Upload IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: BitChordIOS-unsigned
+          path: iosApp/build/Export/*.ipa
+          retention-days: 7
