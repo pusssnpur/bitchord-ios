@@ -20,24 +20,7 @@ workflows:
       - name: Create ExportOptions.plist
         script: |
           cd iosApp
-          cat > ExportOptions.plist << 'ENDOFPLIST'
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-    <key>method</key>
-    <string>ad-hoc</string>
-    <key>compileBitcode</key>
-    <false/>
-    <key>stripSwiftSymbols</key>
-    <true/>
-    <key>signingStyle</key>
-    <string>manual</string>
-    <key>provisioningProfiles</key>
-    <dict/>
-</dict>
-</plist>
-ENDOFPLIST
+          printf '<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n<plist version="1.0">\n<dict>\n    <key>method</key>\n    <string>ad-hoc</string>\n    <key>compileBitcode</key>\n    <false/>\n    <key>stripSwiftSymbols</key>\n    <true/>\n    <key>signingStyle</key>\n    <string>manual</string>\n    <key>provisioningProfiles</key>\n    <dict/>\n</dict>\n</plist>\n' > ExportOptions.plist
       - name: Build iOS (Unsigned)
         script: |
           cd iosApp
