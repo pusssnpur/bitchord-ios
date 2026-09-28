@@ -1,0 +1,47 @@
+# Gradle
+.gradle/
+build/
+local.properties
+*.log
+
+# Xcode
+iosApp/BitChordIOS.xcworkspace/xcuserdata/
+iosApp/BitChordIOS.xcodeproj/xcuserdata/
+iosApp/BitChordIOS/DerivedData/
+*.xcworkspace/
+*.xcodeproj/
+!*.xcodeproj/project.pbxproj
+
+# CocoaPods
+iosApp/Pods/
+iosApp/BitChordIOS/Pods/
+
+# Kotlin Multiplatform
+shared/build/
+shared/.gradle/
+
+# macOS
+.DS_Store
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.swp
+
+# Environment
+*.pem
+*.key
+keystore.properties
+local.properties
+
+# Build outputs
+*.apk
+*.aab
+*.ipa
+*.xcarchive
+*.dSYM
+
+# Test reports
+**/test-results/
+**/coverage/

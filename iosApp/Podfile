@@ -1,0 +1,47 @@
+platform :ios, '17.0'
+use_frameworks!
+
+target 'BitChordIOS' do
+  # Compose Multiplatform
+  pod 'ComposeApp', :path => '../shared'
+  
+  # Image loading
+  pod 'SDWebImage', '~> 5.18'
+  pod 'SDWebImageSwiftUI', '~> 2.2'
+  
+  # Audio
+  pod 'AudioKit', '~> 5.5'
+  
+  # Networking
+  pod 'Alamofire', '~> 5.8'
+  
+  # Keychain
+  pod 'KeychainAccess', '~> 4.2'
+  
+  # Database
+  pod 'GRDB.swift', '~> 6.27'
+  
+  # Logging
+  pod 'OSLog', '~> 1.0'
+  
+  # Analytics (optional)
+  # pod 'Firebase/Analytics'
+  # pod 'Firebase/Crashlytics'
+  
+  # UI Components
+  pod 'SwiftEntryKit', '~> 2.0'
+  
+  target 'BitChordIOSTests' do
+    inherit! :search_paths
+  end
+end
+
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '17.0'
+      config.build_settings['ENABLE_BITCODE'] = 'NO'
+      config.build_settings['SWIFT_VERSION'] = '5.9'
+    end
+  end
+end
