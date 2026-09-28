@@ -17,22 +17,10 @@ workflows:
         script: |
           cd iosApp
           pod install
-      - name: Build iOS (Unsigned)
+      - name: Create ExportOptions.plist
         script: |
           cd iosApp
-          xcodebuild -workspace BitChordIOS.xcworkspace \
-                     -scheme BitChordIOS \
-                     -configuration Release \
-                     -destination generic/platform=iOS \
-                     -archivePath build/BitChordIOS.xcarchive \
-                     CODE_SIGNING_ALLOWED=NO \
-                     CODE_SIGN_IDENTITY="" \
-                     CODE_SIGNING_REQUIRED=NO \
-                     archive
-      - name: Export IPA (Unsigned)
-        script: |
-          cd iosApp
-          cat > ExportOptions.plist << 'EOF'
+          cat > ExportOptions.plist << 'ENDOFPLIST'
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -49,7 +37,22 @@ workflows:
     <dict/>
 </dict>
 </plist>
-EOF
+ENDOFPLIST
+      - name: Build iOS (Unsigned)
+        script: |
+          cd iosApp
+          xcodebuild -workspace BitChordIOS.xcworkspace \
+                     -scheme BitChordIOS \
+                     -configuration Release \
+                     -destination generic/platform=iOS \
+                     -archivePath build/BitChordIOS.xcarchive \
+                     CODE_SIGNING_ALLOWED=NO \
+                     CODE_SIGN_IDENTITY="" \
+                     CODE_SIGNING_REQUIRED=NO \
+                     archive
+      - name: Export IPA (Unsigned)
+        script: |
+          cd iosApp
           xcodebuild -exportArchive \
                      -archivePath build/BitChordIOS.xcarchive \
                      -exportPath build/Export \
