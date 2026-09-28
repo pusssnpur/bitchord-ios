@@ -10,17 +10,6 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
 
-    cocoapods {
-        summary = "BitChord shared module"
-        homepage = "https://github.com/kushagrasinghx/BitChord"
-        ios.deploymentTarget = "17.0"
-        framework {
-            baseName = "BitChordShared"
-            isStatic = false
-            xcodeConfigurationToNativeBuildType["Release"] = NativeBuildType.FRAMEWORK
-        }
-    }
-
     sourceSets {
         val commonMain by getting {
             dependencies {
