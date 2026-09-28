@@ -6,7 +6,6 @@ plugins {
 
 kotlin {
     android()
-
     iosX64()
     iosArm64()
     iosSimulatorArm64()
@@ -15,9 +14,10 @@ kotlin {
         summary = "BitChord shared module"
         homepage = "https://github.com/kushagrasinghx/BitChord"
         ios.deploymentTarget = "17.0"
-        xcodeConfigurationToNativeBuildType["Release"] = framework {
-            isStatic = false
+        framework {
             baseName = "BitChordShared"
+            isStatic = false
+            xcodeConfigurationToNativeBuildType["Release"] = NativeBuildType.FRAMEWORK
         }
     }
 
